@@ -42,6 +42,8 @@ end
 
 function game:load()
     love.graphics.setDefaultFilter("nearest", "nearest", 10)
+    myFont = love.graphics.newFont("assets/DefaultFont.ttf", 18)
+    love.graphics.setFont(myFont)
     player.image = love.graphics.newImage("assets/player.png")
     player.hover.image = love.graphics.newImage("assets/hover.png")
     Map = map:new(
@@ -57,7 +59,8 @@ function game:load()
     InventoryUI = love.graphics.newImage("assets/inventory-ui.png")
     items = love.graphics.newImage("assets/items.png")
     Inventory = storage:new(InventoryUI, 9, 99, {screenWidth, screenHeight}, items, 5, 5)
-    
+    Inventory:newItem(1, 1, 1)
+    Inventory:newItem(2, 2, 1)
 end
 
 function game:update(dt)
