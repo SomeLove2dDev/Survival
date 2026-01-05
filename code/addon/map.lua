@@ -26,6 +26,12 @@ function map:getEntity(x, y)
     return entities[idx]
 end
 
+function map:setEntity(x, y, set)
+    local entities = self.layers[2]
+    local idx = ((y - 1) * self.width) + x
+    entities[idx] = set
+end
+
 function map:draw()
     for _, layer in ipairs(self.layers) do
         for x=1, self.width do

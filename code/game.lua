@@ -11,6 +11,8 @@ currentHeight = screenHeight
 rgb = 1/255
 mtime = 0
 scaleY = 1
+mine = false
+atime = 0
 Scale = scale:new(screenWidth, screenHeight)
 mapdata = require("code.map.Survival")
 
@@ -31,7 +33,9 @@ player = {
     sx = 10,
     sy = 7,
     mx = 0,
-    my = 0
+    my = 0,
+    direction = 1,
+    rotate = 0
 }
 
 function game:new()
@@ -59,19 +63,20 @@ function game:load()
     InventoryUI = love.graphics.newImage("assets/inventory-ui.png")
     items = love.graphics.newImage("assets/items.png")
     Inventory = storage:new(InventoryUI, 9, 99, {screenWidth, screenHeight}, items, 5, 5)
-    Inventory:newItem(1, 1, 1)
-    Inventory:newItem(2, 2, 1)
+    Inventory:newItem(1, 3, 1)
 end
 
 function game:update(dt)
     player.sx = player.x + 9
     player.sy = player.y + 6
     mtime = mtime + 1
+    atime = atime + 1
     cooldown = 5
     if mtime > cooldown then
         if (love.keyboard.isDown("right") or love.keyboard.isDown("d")) then 
             player.hover.offX = 1
             player.hover.offY = 0
+            player.direction = 1
             if Map:getEntity(player.sx + 1, player.sy) == 0 then
                 player.x = player.x + 1
                 Map:setOffset(player.x, player.y) 
@@ -80,6 +85,7 @@ function game:update(dt)
         if (love.keyboard.isDown("left") or love.keyboard.isDown("a")) then 
             player.hover.offX = -1
             player.hover.offY = 0
+            player.direction = -1
             if Map:getEntity(player.sx - 1, player.sy) == 0 then
                 player.x = player.x - 1
                 Map:setOffset(player.x, player.y) 
@@ -101,10 +107,37 @@ function game:update(dt)
                 Map:setOffset(player.x, player.y) 
             end
         end
-        if love.keyboard.isDown("z") then
+        if love.keyboard.isDown("z") and mine == false then
             player.hover.inside = Map:getEntity(player.sx + player.hover.offX, player.sy + player.hover.offY)
+            if player.hover.inside > 0 and player.hover.inside < 50 then 
+                Map:setEntity(player.sx + player.hover.offX, player.sy + player.hover.offY, 0)
+            end
+            atime = 0
+            mine = true
         end
+        if love.keyboard.isDown("1") then Inventory:hold(1) end
+        if love.keyboard.isDown("2") then Inventory:hold(2) end
+        if love.keyboard.isDown("3") then Inventory:hold(3) end
+        if love.keyboard.isDown("4") then Inventory:hold(4) end
+        if love.keyboard.isDown("5") then Inventory:hold(5) end
+        if love.keyboard.isDown("6") then Inventory:hold(6) end
+        if love.keyboard.isDown("7") then Inventory:hold(7) end
+        if love.keyboard.isDown("8") then Inventory:hold(8) end
+        if love.keyboard.isDown("9") then Inventory:hold(9) end
         mtime = 0
+    end
+
+    if mine == true then
+        if atime <= 10 then
+            player.rotate = player.rotate + 5
+        end
+        if atime > 10 and atime < 22 then
+            player.rotate = player.rotate - 5
+        end
+        if atime == 22 then
+            atime = 0
+            mine = false
+        end
     end
 
     if love.keyboard.isDown("escape") then
@@ -122,8 +155,8 @@ function game:draw()
     love.graphics.setColor(1, 1, 1, 1)
     Map:draw()
     love.graphics.draw(player.hover.image, screenWidth / 2 - 24 + (player.hover.offX * 48), screenHeight / 2 + (player.hover.offY * 48), 0, player.scale, player.scale)
-    love.graphics.draw(player.image, screenWidth / 2 - 24, screenHeight / 2, 0, player.scale, player.scale)
-    Inventory:draw()
+    love.graphics.draw(player.image, screenWidth / 2, screenHeight / 2 + 24, 0, player.scale * player.direction, player.scale, 8, 8)
+    Inventory:draw(player.direction, player.rotate)
 
     Scale:draw2()
 end

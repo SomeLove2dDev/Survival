@@ -12,6 +12,7 @@ function storage:new(ui, slots, maxCount, screenData, items, width, height)
     self.height = height
     self.itemQuads = {}
     self.items = {}
+    self.holding = 1
     for i = 1, self.width do
         for j = 1, self.height do
             table.insert(self.itemQuads, love.graphics.newQuad((j - 1) * 16, (i - 1) * 16, 16, 16, self.itemsImage))
@@ -38,10 +39,20 @@ function storage:add(slot, Quantity)
     end
 end
 
-function storage:draw()
-    i = self.items[1].item
+function storage:hold(slot)
+    self.holding = slot
+end
+
+function storage:draw(direction, rotate)
+    u = self.holding
+    i = self.items[u].item
     if i then
-        love.graphics.draw(self.itemsImage, self.itemQuads[i], self.screenData[1] / 2 + 10, self.screenData[2] / 2 + 25, 0, 1.5, 1.5)
+        if direction > 0 then
+            love.graphics.draw(self.itemsImage, self.itemQuads[i], self.screenData[1] / 2 + 18, self.screenData[2] / 2 + 33, math.rad(rotate), 1.5, 1.5, 8, 8)
+        else
+            love.graphics.draw(self.itemsImage, self.itemQuads[i], self.screenData[1] / 2 - 2, self.screenData[2] / 2 + 33, math.rad(-rotate), -1.5, 1.5, 8, 8)
+        end
+        
     end
 
     for d = 1, self.slots do
