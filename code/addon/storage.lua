@@ -24,23 +24,33 @@ function storage:new(ui, slots, maxCount, screenData, items, width, height)
     return self
 end
 
-function storage:newItem(slot, itemID, Quantity)
-    i = slot
-    self.items[i] = {
-        item = itemID, 
-        quantity = Quantity
-    }
-end
-
 function storage:add(itemID, Quantity)
-    i = slot
-    if self.items[i].quantity < self.maxCount then
-        self.items[i].quantity = self.items[i].quantity + Quantity
+    for i = 1, self.slots do
+        j = self.items[i]
+        if j.item == itemID then
+            self.items[i] = {
+                item = itemID, 
+                quantity = j.quantity + Quantity
+            }
+            return 0
+        end
+        if j.item == nil then
+            self.items[i] = {
+                item = itemID, 
+                quantity = Quantity
+            }
+            return 0
+        end
     end
 end
 
 function storage:hold(slot)
     self.holding = slot
+end
+
+function storage:getHolding()
+    i = self.holding
+    return self.items[i].item
 end
 
 function storage:draw(direction, rotate)
