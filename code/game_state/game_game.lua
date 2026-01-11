@@ -13,6 +13,8 @@ mtime = 0
 scaleY = 1
 mine = false
 atime = 0
+moved = false
+state1 = "game"
 Scale = scale:new(screenWidth, screenHeight)
 mapdata = require("code.map.Survival")
 
@@ -69,12 +71,12 @@ function game_game:load()
     Inventory:add(3, 1)
 end
 
-function game_game:update()
+function game_game:update(dt)
     player.sx = player.x + 9
     player.sy = player.y + 6
     mtime = mtime + 1
     atime = atime + 1
-    cooldown = 5
+    cooldown = 6
     if mtime > cooldown then
         if (love.keyboard.isDown("right") or love.keyboard.isDown("d")) then 
             player.hover.offX = 1
@@ -84,6 +86,7 @@ function game_game:update()
                 player.x = player.x + 1
                 Map:setOffset(player.x, player.y) 
             end
+            moved = true
         end
         if (love.keyboard.isDown("left") or love.keyboard.isDown("a")) then 
             player.hover.offX = -1
@@ -93,6 +96,7 @@ function game_game:update()
                 player.x = player.x - 1
                 Map:setOffset(player.x, player.y) 
             end
+            moved = true
         end
         if (love.keyboard.isDown("down") or love.keyboard.isDown("s")) then 
             player.hover.offY = 1
@@ -101,6 +105,7 @@ function game_game:update()
                 player.y = player.y + 1
                 Map:setOffset(player.x, player.y) 
             end
+            moved = true
         end
         if (love.keyboard.isDown("up") or love.keyboard.isDown("w")) then 
             player.hover.offY = -1
@@ -109,6 +114,7 @@ function game_game:update()
                 player.y = player.y - 1
                 Map:setOffset(player.x, player.y) 
             end
+            moved = true
         end
         if love.keyboard.isDown("z") and mine == false and Inventory:getHolding() == 3 then
             player.hover.inside = Map:getEntity(player.sx + player.hover.offX, player.sy + player.hover.offY)
@@ -124,10 +130,11 @@ function game_game:update()
             end
             atime = 0
             mine = true
+            moved = true
         end
 
         if love.keyboard.isDown("x") then 
-
+            state1 = "craft"
         end
 
         if love.keyboard.isDown("1") then Inventory:hold(1) end
@@ -139,7 +146,7 @@ function game_game:update()
         if love.keyboard.isDown("7") then Inventory:hold(7) end
         if love.keyboard.isDown("8") then Inventory:hold(8) end
         if love.keyboard.isDown("9") then Inventory:hold(9) end
-        mtime = 0
+        if moved then mtime = 0 end
     end
 
     if mine == true then
@@ -162,13 +169,18 @@ function game_game:update()
     if Map:getEntity(player.sx, player.sy) > 50 then 
         d = Map:getEntity(player.sx, player.sy)
         if d == 51 then
-            Inventory:add(1, 1)
+            i = love.math.random(2)
+            Inventory:add(1, i)
         end
         if d == 52 then 
-            Inventory:add(2, 1)
+            i = love.math.random(2, 4)
+            Inventory:add(2, i)
         end
         Map:setEntity(player.sx , player.sy, 0)
     end
+
+    state1 = "game"
+    return state1
 end
 
 function game_game:draw()
