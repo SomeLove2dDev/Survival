@@ -1,10 +1,12 @@
 Button = {}
 Button.__index = Button
 
-function Button:new(x, y, width, height, text, color, onClick)
+function Button:new(x, y, width, height, text, ox, oy, color, onClick)
     self = setmetatable({}, Button)
     self.x = x
     self.y = y
+    self.ox = ox
+    self.oy = oy
     self.text = text
     self.width = width
     self.height = height
@@ -27,7 +29,7 @@ function Button:draw()
     love.graphics.setColor(self.color)
     love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
     love.graphics.setColor(0,0,0,1)
-    love.graphics.print(self.text, self.x + self.width / 2 - 9, self.y + self.height / 2 - 9)
+    love.graphics.print(self.text, self.x + self.width / 2 - 9 + self.ox, self.y + self.height / 2 - 9 + self.oy)
     love.graphics.setColor(1,1,1,1)
 end
 

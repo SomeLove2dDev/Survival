@@ -46,9 +46,9 @@ function game_game:new()
 end
 
 function game_game:load()
-    love.graphics.setDefaultFilter("nearest", "nearest", 10)
     myFont = love.graphics.newFont("assets/DefaultFont.ttf", 18)
     love.graphics.setFont(myFont)
+    love.graphics.setDefaultFilter("nearest", "nearest", 10)
     player.image = love.graphics.newImage("assets/player.png")
     player.hover.image = love.graphics.newImage("assets/hover.png")
     Map = map:new(
@@ -185,6 +185,7 @@ end
 
 function game_game:draw()
     Scale:draw1()
+
     love.graphics.setColor(46*rgb, 138*rgb, 230*rgb, 1)
     love.graphics.rectangle("fill", 0, 0, screenWidth, screenHeight)
     love.graphics.setColor(1, 1, 1, 1)
@@ -192,6 +193,7 @@ function game_game:draw()
     love.graphics.draw(player.hover.image, screenWidth / 2 - 24 + (player.hover.offX * 48), screenHeight / 2 + (player.hover.offY * 48), 0, player.scale, player.scale)
     love.graphics.draw(player.image, screenWidth / 2, screenHeight / 2 + 24, 0, player.scale * player.direction, player.scale, 8, 8)
     Inventory:draw(player.direction, player.rotate)
+    
     Scale:draw2()
 end
 
