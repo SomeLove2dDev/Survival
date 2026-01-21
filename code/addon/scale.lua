@@ -1,6 +1,11 @@
+-----------------
+-- Scale Class --
+-----------------
+
 scale = {}
 scale.__index = scale
 
+-- create scale class, needs screen width and height in px
 function scale:new(sx, sy)
     self = setmetatable({}, scale)
     self.sx = sx
@@ -14,6 +19,7 @@ function scale:new(sx, sy)
     return self
 end
 
+-- put this at the end of your update functions
 function scale:update()
     if self.currentHeight ~= self.sy * self.scaleY then
         self.scaleY = self.currentHeight / self.sy
@@ -21,6 +27,7 @@ function scale:update()
     end
 end
 
+-- put this at the front of your draw functions
 function scale:draw1()
     love.graphics.push()
 
@@ -33,6 +40,7 @@ function scale:draw1()
     love.graphics.scale(self.scaleY, self.scaleY)
 end
 
+-- put this at the end of the draw function
 function scale:draw2()
     love.graphics.origin()
     love.graphics.setColor(0, 0, 0, 1)
@@ -42,6 +50,7 @@ function scale:draw2()
     love.graphics.pop()
 end
 
+-- get scale multiplier (the amount screen is increased by)
 function scale:getScale()
     return self.csy
 end

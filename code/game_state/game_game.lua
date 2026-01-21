@@ -1,6 +1,11 @@
+-----------------
+-- Game : Game --
+-----------------
+
 game_game = {}
 game_game.__index = game_game
 
+-- set variables and get required code
 map = require("code.addon.map")
 scale = require("code.addon.scale")
 storage = require("code.addon.storage")
@@ -16,6 +21,7 @@ atime = 0
 moved = false
 Scale = scale:new(screenWidth, screenHeight)
 mapdata = require("code.map.Survival")
+saved = false
 
 Tiles = mapdata.layers[1].data
 Entities = mapdata.layers[2].data
@@ -45,6 +51,7 @@ function game_game:new()
     return obj
 end
 
+-- load function for game
 function game_game:load()
     myFont = love.graphics.newFont("assets/DefaultFont.ttf", 18)
     love.graphics.setFont(myFont)
@@ -70,13 +77,36 @@ function game_game:load()
     Inventory:add(3, 1)
 end
 
-function game_game:update(dt)
+-- update function for game
+function game_game:update(dt, save, past)
+    -- get saved info from craft
+    d = 0
+    if past == "craft" then
+        saved = false
+    end
+    for _, thing in ipairs(save) do
+        d = d + 1
+        if thing[1] == true and not saved then
+            if d == 1 then
+                added = - thing[2] - Inventory:getQuantity(4)
+                Inventory:set(4, thing[2])
+                Inventory:remove(1, 2 * added)
+            elseif d == 2 then 
+                Inventory:set(5, thing[2])
+            end
+            
+        end
+    end
+    saved = true
     player.sx = player.x + 9
     player.sy = player.y + 6
     mtime = mtime + 1
     atime = atime + 1
     cooldown = 6
+
+    -- check keys
     if mtime > cooldown then
+        -- movement
         if (love.keyboard.isDown("right") or love.keyboard.isDown("d")) then 
             player.hover.offX = 1
             player.hover.offY = 0
@@ -115,27 +145,41 @@ function game_game:update(dt)
             end
             moved = true
         end
-        if love.keyboard.isDown("z") and mine == false and Inventory:getHolding() == 3 then
-            player.hover.inside = Map:getEntity(player.sx + player.hover.offX, player.sy + player.hover.offY)
-            if player.hover.inside > 0 and player.hover.inside < 50 then 
-                d = player.hover.inside
-                Map:setEntity(player.sx + player.hover.offX, player.sy + player.hover.offY, 0)
-                if d == 14 then
-                    Map:setItem(player.sx + player.hover.offX, player.sy + player.hover.offY, 1)
+        -- interact
+        if love.keyboard.isDown("z") and mine == false then
+            -- mine
+            holding = Inventory:getHolding()
+            if holding == 3 then
+                player.hover.inside = Map:getEntity(player.sx + player.hover.offX, player.sy + player.hover.offY)
+                if player.hover.inside > 0 and player.hover.inside < 50 then 
+                    d = player.hover.inside
+                    Map:setEntity(player.sx + player.hover.offX, player.sy + player.hover.offY, 0)
+                    if d == 14 then
+                        Map:setItem(player.sx + player.hover.offX, player.sy + player.hover.offY, 1)
+                    end
+                    if d == 24 then 
+                        Map:setItem(player.sx + player.hover.offX, player.sy + player.hover.offY, 2)
+                    end
                 end
-                if d == 24 then 
-                    Map:setItem(player.sx + player.hover.offX, player.sy + player.hover.offY, 2)
+                atime = 0
+                mine = true
+                moved = true
+            end
+            --place
+            if Map:getEntity(player.sx + player.hover.offX, player.sy + player.hover.offY) == 50 and Inventory:getQuantity(holding) > 0 then
+                if holding == 4 then
+                    Map:setTile(player.sx + player.hover.offX, player.sy + player.hover.offY, 4, true)
+                    Map:setEntity(player.sx + player.hover.offX, player.sy + player.hover.offY, 0)
+                    Inventory:remove(4, 1)
                 end
             end
-            atime = 0
-            mine = true
-            moved = true
         end
-
+        -- switch to craft
         if love.keyboard.isDown("x") then 
             return "craft"
         end
 
+        -- switch holding item
         if love.keyboard.isDown("1") then Inventory:hold(1) end
         if love.keyboard.isDown("2") then Inventory:hold(2) end
         if love.keyboard.isDown("3") then Inventory:hold(3) end
@@ -148,6 +192,7 @@ function game_game:update(dt)
         if moved then mtime = 0 end
     end
 
+    -- mining animation
     if mine == true then
         if atime <= 10 then
             player.rotate = player.rotate + 5
@@ -161,28 +206,33 @@ function game_game:update(dt)
         end
     end
 
+    -- exit
     if love.keyboard.isDown("escape") then
         love.event.quit()
     end
 
+    -- collect items
     if Map:getEntity(player.sx, player.sy) > 50 then 
         d = Map:getEntity(player.sx, player.sy)
         if d == 51 then
             i = love.math.random(2)
             Inventory:add(1, i)
+            Map:setEntity(player.sx , player.sy, 0)
         end
         if d == 52 then 
             i = love.math.random(2, 4)
             Inventory:add(2, i)
+            Map:setEntity(player.sx , player.sy, 0)
         end
-        Map:setEntity(player.sx , player.sy, 0)
     end
 
     Scale:update()
+    Inventory:update()
 
     return "game"
 end
 
+-- draw function for game
 function game_game:draw()
     Scale:draw1()
 

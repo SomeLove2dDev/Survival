@@ -1,7 +1,13 @@
+------------------
+-- Button Class --
+------------------
+
 Button = {}
 Button.__index = Button
 
-function Button:new(x, y, width, height, text, ox, oy, color, onClick)
+-- create button --
+-- ox, oy is offset x, y, you also need to provide the onClick function --
+function Button:new(x, y, width, height, text, ox, oy, color)
     self = setmetatable({}, Button)
     self.x = x
     self.y = y
@@ -11,26 +17,29 @@ function Button:new(x, y, width, height, text, ox, oy, color, onClick)
     self.width = width
     self.height = height
     self.color = color
-    self.onClick = onClick
     return self
 end
 
+-- check if clicked, i is the scale x, y btw -- 
 function Button:Clicked(i)
     local mx, my = love.mouse.getPosition()
     local i = i or 1
-    if mx > self.x * i and mx < (self.x + self.width) * i and my > self.y * i and my < (self.y + self.height) * i and love.mouse.isDown(1) then
-        if self.onClick then
-            self.onClick()
-        end
-    end
+    return mx > self.x * i and mx < (self.x + self.width) * i and my > self.y * i and my < (self.y + self.height) * i and love.mouse.isDown(1) 
 end
 
+-- draw the button --
 function Button:draw()
     love.graphics.setColor(self.color)
     love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
     love.graphics.setColor(0,0,0,1)
+    -- assumes font size is 18
     love.graphics.print(self.text, self.x + self.width / 2 - 9 + self.ox, self.y + self.height / 2 - 9 + self.oy)
     love.graphics.setColor(1,1,1,1)
+end
+
+-- get tbe button's position --
+function Button:getPos()
+    return self.x, self.y
 end
 
 return Button

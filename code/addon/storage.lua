@@ -1,6 +1,12 @@
+-------------------
+-- Storage Class --
+-------------------
+
 storage = {}
 storage.__index = storage
 
+
+-- create class, screenData is width, height, real width and height is the amount of tiles width and height in the refernce image (items)
 function storage:new(ui, slots, maxCount, screenData, items, width, height)
     self = setmetatable(self, storage)
     self.slots = slots
@@ -24,6 +30,7 @@ function storage:new(ui, slots, maxCount, screenData, items, width, height)
     return self
 end
 
+-- add items to your inventory
 function storage:add(itemID, Quantity)
     for i = 1, self.slots do
         j = self.items[i]
@@ -44,15 +51,76 @@ function storage:add(itemID, Quantity)
     end
 end
 
+function storage:remove(itemID, Quantity)
+    for i = 1, self.slots do
+        j = self.items[i]
+        if j.item == itemID and j.quantity > 0 and Quantity > 0 then
+            self.items[i] = {
+                item = itemID, 
+                quantity = j.quantity - Quantity
+            }
+            return 0
+        end
+    end
+end
+
+function storage:set(itemID, Quantity)
+    for i = 1, self.slots do
+        j = self.items[i]
+        if j.item == itemID then
+            self.items[i] = {
+                item = itemID, 
+                quantity = Quantity
+            }
+            return 0
+        end
+        if j.item == nil then
+            self.items[i] = {
+                item = itemID, 
+                quantity = Quantity
+            }
+            return 0
+        end
+    end
+end
+
+-- hold a certain item
 function storage:hold(slot)
     self.holding = slot
 end
 
+-- get holding block
 function storage:getHolding()
     i = self.holding
     return self.items[i].item
 end
 
+-- get quantity of holding block
+function storage:getQuantity(itemID)
+    for i = 1, self.slots do
+        j = self.items[i]
+        if j.item == itemID then
+            return j.quantity
+        elseif j.item == nil then
+            return 0
+        end
+    end
+end
+
+-- update storage class
+function storage:update()
+    for i = 1, self.slots do
+        j = self.items[i]
+        if j.quantity < 1 then
+            self.items[i] = {
+                item = nil,
+                quantity = 0
+            }
+        end
+    end
+end
+
+-- draw storage class
 function storage:draw(direction, rotate)
     u = self.holding
     i = self.items[u].item

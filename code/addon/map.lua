@@ -1,6 +1,11 @@
+---------------
+-- Map Class --
+---------------
+
 map = {}
 map.__index = map
 
+-- layers order: Tiles, Entities, width and height is of the layers, image is the refernce tilemap, items is the reference items map, iwidth1, iwidth2, iheight1, iheight2, is the width and height of the reference images (image (1), items(2)), offX, offY is the offset of the map (based on tiles) --
 function map:new(layers, width, height, image, items, iWidth1, iHeight1, iWidth2, iHeight2, offX, offY)
     self = setmetatable({}, map)
     self.layers = layers or {}
@@ -29,39 +34,59 @@ function map:new(layers, width, height, image, items, iWidth1, iHeight1, iWidth2
     return self
 end
 
+-- get Entity tile on x, y
 function map:getEntity(x, y)
     local entities = self.layers[2]
     local idx = ((y - 1) * self.width) + x
     return entities[idx]
 end
 
+-- set Entity tile on x, y
 function map:setEntity(x, y, set)
     local entities = self.layers[2]
     local idx = ((y - 1) * self.width) + x
     entities[idx] = set
 end
 
+-- set Tile on x, y
+function map:setTile(x, y, set, item)
+    local entities = self.layers[1]
+    local idx = ((y - 1) * self.width) + x
+    if not item then
+        entities[idx] = set
+    elseif item then
+        entities[idx] = 50 + set
+    else
+        return 0
+    end
+end
+-- set Item tile on x, y
 function map:setItem(x, y, set)
     local entities = self.layers[2]
     local idx = ((y - 1) * self.width) + x
     entities[idx] = 50 + set
 end
 
+-- draw map, assumes tile size is 16 by 16
 function map:draw()
     for _, layer in ipairs(self.layers) do
         for x=1, self.width do
             for y=1, self.height do
                 a = ((y-1) * self.width) + x
                 b = layer[a]
+                d = b - 50
                 dx = ((x-1) * 48) - self.offX * 48 - 24
                 dy = ((y-1) * 48) - self.offY * 48 - 24
-                if b and type(b) == "number" and b > 0 and b < 50 and dx + 48 > 0 and dx < 768 and dy + 48 > 0 and dy < 432 then
-                    love.graphics.draw(self.image, self.tiles[b], dx, dy, 0, 3, 3)
+                if b and type(b) == "number" and b > 0 and dx + 48 > 0 and dx < 768 and dy + 48 > 0 and dy < 432 then
+                    if b < 50 then 
+                        love.graphics.draw(self.image, self.tiles[b], dx, dy, 0, 3, 3)
+                    elseif d == 1 or d == 2 or d == 3 then
+                        love.graphics.draw(self.items, self.itiles[d], 12 + dx, 12 + dy, 0, 1.5, 1.5)
+                    elseif d == 4 or d == 5 then
+                        love.graphics.draw(self.items, self.itiles[d], dx, dy, 0, 3, 3)
+                    end
                 end
-                if b and type(b) == "number" and b > 50 and b < 75 and dx + 48 > 0 and dx < 768 and dy + 48 > 0 and dy < 432 then
-                    d = b - 50 
-                    love.graphics.draw(self.items, self.itiles[d], 12 + dx, 12 + dy, 0, 1.5, 1.5)
-                end
+
             end
         end
     end
