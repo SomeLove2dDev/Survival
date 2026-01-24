@@ -18,17 +18,13 @@ bQty = {
     0,
     0
 }
-bAdd = {
-    0, 
-    0
-}
 text = {
     "bridge",
     "workbench",
-    "item",
-    "item",
-    "item",
-    "item"
+}
+recipe = {
+    "3 wood",
+    "5 wood + 4 stone"
 }
 rgb = 1/255
 bqt = 2
@@ -45,9 +41,9 @@ end
 
 -- load function for game craft
 function game_craft:load()
-    myFont = love.graphics.newFont("assets/DefaultFont.ttf", 18)
+    love.graphics.setDefaultFilter("nearest", "nearest", 18)
+    myFont = love.graphics.newFont("assets/DefaultFont.ttf", 36)
     love.graphics.setFont(myFont)
-    love.graphics.setDefaultFilter("nearest", "nearest", 10)
     blocksMain = love.graphics.newImage("assets/items.png")
     for i=1, 5 do
         for j=1, 5 do
@@ -105,11 +101,14 @@ function game_craft:draw()
     love.graphics.setColor(1, 1, 1, 1)
     for _, Button in ipairs(Buttons) do
         Button:draw()
-        a, b = Button:getPos()love.graphics.setColor(32 * rgb, 46 * rgb, 55 * rgb, 1)
+        a, b = Button:getPos()
         love.graphics.setColor(16 * rgb, 20 * rgb, 31 * rgb, 1)
         love.graphics.rectangle("fill", a + 6, b + 6, 38, 38)
         love.graphics.setColor(1, 1, 1, 1)
         love.graphics.draw(blocksMain, logo[d], a + 9, b + 9, 0, 2, 2)
+        love.graphics.setColor(0,0,0,1)
+        love.graphics.print(recipe[d], a + 100, b + 35, 0, 0.5, 0.5)
+        love.graphics.setColor(1,1,1,1)
         d = d + 1
     end
 

@@ -33,7 +33,7 @@ function Button:draw()
     love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
     love.graphics.setColor(0,0,0,1)
     -- assumes font size is 18
-    love.graphics.print(self.text, self.x + self.width / 2 - 9 + self.ox, self.y + self.height / 2 - 9 + self.oy)
+    love.graphics.print(self.text, self.x + self.width / 2 - 18 + self.ox, self.y + self.height / 2 - 18 + self.oy)
     love.graphics.setColor(1,1,1,1)
 end
 

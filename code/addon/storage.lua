@@ -97,14 +97,12 @@ end
 
 -- get quantity of holding block
 function storage:getQuantity(itemID)
-    for i = 1, self.slots do
-        j = self.items[i]
-        if j.item == itemID then
-            return j.quantity
-        elseif j.item == nil then
-            return 0
+    for _, item in ipairs(self.items) do
+        if item.item == itemID then
+            return item.quantity
         end
     end
+    return 0
 end
 
 -- update storage class
@@ -145,9 +143,9 @@ function storage:draw(direction, rotate)
             love.graphics.draw(self.itemsImage, self.itemQuads[j], 76 + ((d - 1) * 72), self.screenData[2] - 62, 0, 2.5, 2.5)
             love.graphics.setColor(0,0,0,1)
             if k < 10 then
-                love.graphics.print(tostring(k), 107 + ((d - 1) * 72), self.screenData[2] - 40)
+                love.graphics.print(tostring(k), 107 + ((d - 1) * 72), self.screenData[2] - 45)
             else
-                love.graphics.print(tostring(k), 100 + ((d - 1) * 72), self.screenData[2] - 40)
+                love.graphics.print(tostring(k), 100 + ((d - 1) * 72), self.screenData[2] - 45)
             end
             love.graphics.setColor(1,1,1,1)
             

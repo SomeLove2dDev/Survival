@@ -53,9 +53,9 @@ end
 
 -- load function for game
 function game_game:load()
-    myFont = love.graphics.newFont("assets/DefaultFont.ttf", 18)
+    love.graphics.setDefaultFilter("nearest", "nearest", 18)
+    myFont = love.graphics.newFont("assets/DefaultFont.ttf", 36)
     love.graphics.setFont(myFont)
-    love.graphics.setDefaultFilter("nearest", "nearest", 10)
     player.image = love.graphics.newImage("assets/player.png")
     player.hover.image = love.graphics.newImage("assets/hover.png")
     Map = map:new(
@@ -88,11 +88,24 @@ function game_game:update(dt, save, past)
         d = d + 1
         if thing[1] == true and not saved then
             if d == 1 then
-                added = - thing[2] - Inventory:getQuantity(4)
-                Inventory:set(4, thing[2])
-                Inventory:remove(1, 2 * added)
+                cQ1 = Inventory:getQuantity(4)
+                added = thing[2] - cQ1
+                for i = 1, added do
+                    if Inventory:getQuantity(4) < thing[2] and Inventory:getQuantity(1) >= 3 then
+                        Inventory:set(4, cQ1 + i)
+                        Inventory:remove(1, 3)
+                    end
+                end
             elseif d == 2 then 
-                Inventory:set(5, thing[2])
+                cQ2 = Inventory:getQuantity(5)
+                added = thing[2] - cQ2
+                for i = 1, added do
+                    if Inventory:getQuantity(5) < thing[2] and Inventory:getQuantity(1) >= 5 and Inventory:getQuantity(2) >= 4 then
+                        Inventory:set(5, cQ2 + i)
+                        Inventory:remove(1, 5)
+                        Inventory:remove(2, 4)
+                    end
+                end
             end
             
         end
@@ -215,12 +228,12 @@ function game_game:update(dt, save, past)
     if Map:getEntity(player.sx, player.sy) > 50 then 
         d = Map:getEntity(player.sx, player.sy)
         if d == 51 then
-            i = love.math.random(2)
+            i = love.math.random(2, 4)
             Inventory:add(1, i)
             Map:setEntity(player.sx , player.sy, 0)
         end
         if d == 52 then 
-            i = love.math.random(2, 4)
+            i = love.math.random(3)
             Inventory:add(2, i)
             Map:setEntity(player.sx , player.sy, 0)
         end
