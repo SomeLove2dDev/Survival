@@ -32,7 +32,7 @@ function Button:draw()
     love.graphics.setColor(self.color)
     love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
     love.graphics.setColor(0,0,0,1)
-    -- assumes font size is 18
+    -- adjust offset as you wish
     love.graphics.print(self.text, self.x + self.width / 2 - 18 + self.ox, self.y + self.height / 2 - 18 + self.oy)
     love.graphics.setColor(1,1,1,1)
 end
