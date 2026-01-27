@@ -1,5 +1,5 @@
 name = "Survival"
-build_directory = "export"
+build_directory = "exports"
 love_version = "11.5"
 
 love_files = [
