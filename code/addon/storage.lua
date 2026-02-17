@@ -130,7 +130,7 @@ function storage:draw(direction, rotate)
         if direction > 0 then
             love.graphics.draw(self.itemsImage, self.itemQuads[i], self.screenData[1] / 2 + 28, self.screenData[2] / 2 + 33, math.rad(rotate), 1.5, 1.5, 8, 8)
         else
-            love.graphics.draw(self.itemsImage, self.itemQuads[i], self.screenData[1] / 2 - 2, self.screenData[2] / 2 + 33, math.rad(-rotate), -1.5, 1.5, 8, 8)
+            love.graphics.draw(self.itemsImage, self.itemQuads[i], self.screenData[1] / 2 - 28, self.screenData[2] / 2 + 33, math.rad(-rotate), -1.5, 1.5, 8, 8)
         end
     end
 
