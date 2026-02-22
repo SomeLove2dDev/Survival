@@ -54,16 +54,16 @@ end
 -- load function for game
 function game_game:load()
     love.graphics.setDefaultFilter("nearest", "nearest", 18)
-    myFont = love.graphics.newFont("assets/DefaultFont.ttf", 36)
+    myFont = love.graphics.newFont("assets/font/DefaultFont.ttf", 36)
     love.graphics.setFont(myFont)
-    player.image = love.graphics.newImage("assets/player.png")
-    player.hover.image = love.graphics.newImage("assets/hover.png")
+    player.image = love.graphics.newImage("assets/sprites/player.png")
+    player.hover.image = love.graphics.newImage("assets/sprites/hover.png")
     Map = map:new(
         {Tiles, Entities},
         300,
         200,
-        love.graphics.newImage("assets/tileset.png"),
-        love.graphics.newImage("assets/items.png"),
+        love.graphics.newImage("assets/sprites/tileset.png"),
+        love.graphics.newImage("assets/sprites/items.png"),
         10,
         5,
         5,
@@ -71,8 +71,8 @@ function game_game:load()
         player.x, 
         player.y
     ) 
-    InventoryUI = love.graphics.newImage("assets/inventory-ui.png")
-    items = love.graphics.newImage("assets/items.png")
+    InventoryUI = love.graphics.newImage("assets/sprites/inventory-ui.png")
+    items = love.graphics.newImage("assets/sprites/items.png")
     Inventory = storage:new(InventoryUI, 9, 99, {screenWidth, screenHeight}, items, 5, 5)
     Inventory:add(3, 1)
     Inventory:add(4, 10)
@@ -103,7 +103,7 @@ function game_game:update(dt, save, past)
                 
                 for i = 1, added do
                     if Inventory:getQuantity(5) < thing[2] and Inventory:getQuantity(1) >= 5 and Inventory:getQuantity(2) >= 4 then
-                        Inventory:set(5, cQ2 + i)
+                        Inventory:set(14, cQ2 + i)
                         Inventory:remove(1, 5)
                         Inventory:remove(2, 4)
                     end
@@ -134,7 +134,7 @@ function game_game:update(dt, save, past)
             player.hover.offX = 1
             player.hover.offY = 0
             player.direction = 1
-            if Map:getEntity(player.sx + 1, player.sy) == 0 or Map:getEntity(player.sx + 1, player.sy) > 50 then
+            if Map:getEntity(player.sx + 1, player.sy) == 0 or Map:getEntity(player.sx + 1, player.sy) < 64 and Map:getEntity(player.sx + 1, player.sy) > 50 then
                 player.x = player.x + 1
                 Map:setOffset(player.x, player.y) 
             end
@@ -144,7 +144,7 @@ function game_game:update(dt, save, past)
             player.hover.offX = -1
             player.hover.offY = 0
             player.direction = -1
-            if Map:getEntity(player.sx - 1, player.sy) == 0 or Map:getEntity(player.sx - 1, player.sy) > 50 then
+            if Map:getEntity(player.sx - 1, player.sy) == 0 or Map:getEntity(player.sx - 1, player.sy) < 64 and Map:getEntity(player.sx - 1, player.sy) > 50 then
                 player.x = player.x - 1
                 Map:setOffset(player.x, player.y) 
             end
@@ -153,7 +153,7 @@ function game_game:update(dt, save, past)
         if (love.keyboard.isDown("down") or love.keyboard.isDown("s")) then 
             player.hover.offY = 1
             player.hover.offX = 0
-            if Map:getEntity(player.sx, player.sy + 1) == 0 or Map:getEntity(player.sx, player.sy + 1) > 50 then
+            if Map:getEntity(player.sx, player.sy + 1) == 0 or Map:getEntity(player.sx, player.sy + 1) < 64 and Map:getEntity(player.sx, player.sy + 1) > 50 then
                 player.y = player.y + 1
                 Map:setOffset(player.x, player.y) 
             end
@@ -162,7 +162,7 @@ function game_game:update(dt, save, past)
         if (love.keyboard.isDown("up") or love.keyboard.isDown("w")) then 
             player.hover.offY = -1
             player.hover.offX = 0
-            if Map:getEntity(player.sx, player.sy - 1) == 0 or Map:getEntity(player.sx, player.sy - 1) > 50 then
+            if Map:getEntity(player.sx, player.sy - 1) == 0 or Map:getEntity(player.sx, player.sy - 1) < 64 and Map:getEntity(player.sx, player.sy - 1) > 50 then
                 player.y = player.y - 1
                 Map:setOffset(player.x, player.y) 
             end
@@ -176,27 +176,27 @@ function game_game:update(dt, save, past)
                 player.hover.inside = Map:getEntity(player.sx + player.hover.offX, player.sy + player.hover.offY)
                 if player.hover.inside > 0 and player.hover.inside < 50 then 
                     d = player.hover.inside
-                    Map:setEntity(player.sx + player.hover.offX, player.sy + player.hover.offY, 0)
+                    Map:setEntity(player.sx + player.hover.offX, player.sy + player.hover.offY, 0, false)
                     if d == 14 then
-                        Map:setItem(player.sx + player.hover.offX, player.sy + player.hover.offY, 1)
+                        Map:setEntity(player.sx + player.hover.offX, player.sy + player.hover.offY, 1, true)
                     end
                     if d == 24 then 
-                        Map:setItem(player.sx + player.hover.offX, player.sy + player.hover.offY, 2)
+                        Map:setEntity(player.sx + player.hover.offX, player.sy + player.hover.offY, 2, true)
                     end
                     if d == 4 then
                         i = love.math.random(10)
                         if i < 2 then 
-                            Map:setItem(player.sx + player.hover.offX, player.sy + player.hover.offY, 6)
+                            Map:setEntity(player.sx + player.hover.offX, player.sy + player.hover.offY, 6, true)
                         else
-                            Map:setItem(player.sx + player.hover.offX, player.sy + player.hover.offY, 7)
+                            Map:setEntity(player.sx + player.hover.offX, player.sy + player.hover.offY, 7, true)
                         end
                     end
                     if d == 34 then
                         i = love.math.random(3)
                         if i <= 2 then 
-                            Map:setItem(player.sx + player.hover.offX, player.sy + player.hover.offY, 6)
+                            Map:setEntity(player.sx + player.hover.offX, player.sy + player.hover.offY, 6, true)
                         else
-                            Map:setItem(player.sx + player.hover.offX, player.sy + player.hover.offY, 7)
+                            Map:setEntity(player.sx + player.hover.offX, player.sy + player.hover.offY, 7, true)
                         end
                     end
                 end
@@ -207,11 +207,18 @@ function game_game:update(dt, save, past)
                 moved = true
             end
             --place
-            if Map:getEntity(player.sx + player.hover.offX, player.sy + player.hover.offY) == 50 and Inventory:getQuantity(holding) > 0 then
-                if holding == 4 then
-                    Map:setTile(player.sx + player.hover.offX, player.sy + player.hover.offY, 4, true)
-                    Map:setEntity(player.sx + player.hover.offX, player.sy + player.hover.offY, 0)
-                    Inventory:remove(4, 1)
+            if Inventory:getQuantity(holding) > 0 then
+                if Map:getEntity(player.sx + player.hover.offX, player.sy + player.hover.offY) == 50 then
+                    if holding == 4 then
+                        Map:setTile(player.sx + player.hover.offX, player.sy + player.hover.offY, 4, true)
+                        Map:setEntity(player.sx + player.hover.offX, player.sy + player.hover.offY, 0, false)
+                        Inventory:remove(4, 1)
+                    end
+                else
+                    if holding == 14 then
+                        Map:setEntity(player.sx + player.hover.offX, player.sy + player.hover.offY, 14, true)
+                        Inventory:remove(14, 1)
+                    end
                 end
             end
         end
@@ -265,22 +272,22 @@ function game_game:update(dt, save, past)
         if d == 51 then
             i = love.math.random(3)
             Inventory:add(1, i)
-            Map:setEntity(player.sx , player.sy, 0)
+            Map:setEntity(player.sx , player.sy, 0, false)
         end
         if d == 52 then 
             i = love.math.random(2)
             Inventory:add(2, i)
-            Map:setEntity(player.sx , player.sy, 0)
+            Map:setEntity(player.sx , player.sy, 0, false)
         end
         if d == 56 then
             i = love.math.random(2)
             Inventory:add(6, i)
-            Map:setEntity(player.sx , player.sy, 0)
+            Map:setEntity(player.sx , player.sy, 0, false)
         end
         if d == 57 then
             i = love.math.random(2, 4)
             Inventory:add(7, i)
-            Map:setEntity(player.sx , player.sy, 0)
+            Map:setEntity(player.sx , player.sy, 0, false)
         end
     end
 

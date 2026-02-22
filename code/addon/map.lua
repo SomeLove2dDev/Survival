@@ -42,10 +42,16 @@ function map:getEntity(x, y)
 end
 
 -- set Entity tile on x, y
-function map:setEntity(x, y, set)
+function map:setEntity(x, y, set, item)
     local entities = self.layers[2]
     local idx = ((y - 1) * self.width) + x
-    entities[idx] = set
+    if not item then
+        entities[idx] = set
+    elseif item then
+        entities[idx] = 50 + set
+    else
+        return 0
+    end
 end
 
 -- set Tile on x, y
@@ -59,12 +65,6 @@ function map:setTile(x, y, set, item)
     else
         return 0
     end
-end
--- set Item tile on x, y
-function map:setItem(x, y, set)
-    local entities = self.layers[2]
-    local idx = ((y - 1) * self.width) + x
-    entities[idx] = 50 + set
 end
 
 -- draw map, assumes tile size is 16 by 16
@@ -82,7 +82,7 @@ function map:draw()
                         love.graphics.draw(self.image, self.tiles[b], dx, dy, 0, 3, 3)
                     elseif d == 1 or d == 2 or d == 3 or d == 6 or d == 7 then
                         love.graphics.draw(self.items, self.itiles[d], 12 + dx, 12 + dy, 0, 1.5, 1.5)
-                    elseif d == 4 or d == 5 then
+                    elseif d == 4 or d == 14 then
                         love.graphics.draw(self.items, self.itiles[d], dx, dy, 0, 3, 3)
                     end
                 end

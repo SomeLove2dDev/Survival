@@ -50,9 +50,9 @@ end
 -- load function for game craft
 function game_craft:load()
     love.graphics.setDefaultFilter("nearest", "nearest", 18)
-    myFont = love.graphics.newFont("assets/DefaultFont.ttf", 36)
+    myFont = love.graphics.newFont("assets/font/DefaultFont.ttf", 36)
     love.graphics.setFont(myFont)
-    blocksMain = love.graphics.newImage("assets/items.png")
+    blocksMain = love.graphics.newImage("assets/sprites/items.png")
     for i=1, 5 do
         for j=1, 5 do
             table.insert(blocks, love.graphics.newQuad((j-1) * 16, (i-1) * 16, 16, 16, blocksMain))
