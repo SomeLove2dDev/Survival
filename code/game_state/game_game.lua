@@ -84,7 +84,6 @@ function game_game:load()
         table.insert(healthQuads, love.graphics.newQuad((i-1)*16, 0, 16, 16, health))
     end
     Inventory:add(3, 1)
-    Inventory:add(6, 5)
 end
 
 -- update function for game
@@ -208,6 +207,12 @@ function game_game:update(dt, save, past)
                             Map:setEntity(player.sx + player.hover.offX, player.sy + player.hover.offY, 7, true)
                         end
                     end
+                    if d == 10 then
+                        Map:setEntity(player.sx + player.hover.offX, player.sy + player.hover.offY, 5, true)
+                    end
+                    if d == 20 then
+                        Map:setEntity(player.sx + player.hover.offX, player.sy + player.hover.offY, 8, true)
+                    end
                 end
                 atime = 0
                 if not mine then
@@ -296,6 +301,16 @@ function game_game:update(dt, save, past)
         if d == 57 then
             i = love.math.random(2, 4)
             Inventory:add(7, i)
+            Map:setEntity(player.sx , player.sy, 0, false)
+        end
+        if d == 55 then
+            i = love.math.random(3)
+            Inventory:add(5, i)
+            Map:setEntity(player.sx , player.sy, 0, false)
+        end
+        if d == 58 then
+            i = love.math.random(3)
+            Inventory:add(8, i)
             Map:setEntity(player.sx , player.sy, 0, false)
         end
     end
